@@ -1,0 +1,22 @@
+{
+    "$schema": "https://docs.openclaw.ai/schema/config.json",
+    "_comment": "Directify Agent - OpenClaw Configuration",
+
+    "agents": {
+        "defaults": {
+            "model": {
+                "primary": "anthropic/claude-sonnet-4-6",
+                "fallbacks": [
+                    "openai/gpt-4o"
+                ]
+            }
+        },
+        "list": [
+            {
+                "id": "main",
+                "name": "Directify Agent",
+                "workspace": "~/clawd-directify"
+            }
+        ]
+    }
+}
