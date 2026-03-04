@@ -69,7 +69,7 @@ Edit `~/clawd-directify/TOOLS.md` and fill in:
 - **Directory ID** - Found in your dashboard URL or Settings > General
 
 ```markdown
-- **Base URL:** `https://directify.app/api/v1`
+- **Base URL:** `https://directify.app/api`
 - **API Key:** `df_live_abc123...`
 - **Directory ID:** `42`
 ```
@@ -163,10 +163,10 @@ The agent works on any channel OpenClaw supports. Configure your preferred chann
 
 Paste your CSV directly in chat:
 ```
-title,description,category,website
-Acme Corp,Leading software company,Software,https://acme.com
-Beta Inc,Design agency,Design,https://beta.design
-Gamma LLC,Marketing firm,Marketing,https://gamma.io
+name,description,url,category_id
+Acme Corp,Leading software company,https://acme.com,1
+Beta Inc,Design agency,https://beta.design,2
+Gamma LLC,Marketing firm,https://gamma.io,3
 ```
 
 The agent will parse it, match categories, and create all listings.

@@ -4,7 +4,7 @@
 
 Update these values with your Directify API credentials:
 
-- **Base URL:** `https://directify.app/api/v1`
+- **Base URL:** `https://directify.app/api`
 - **API Key:** `YOUR_API_KEY_HERE`
 - **Directory ID:** `YOUR_DIRECTORY_ID`
 
