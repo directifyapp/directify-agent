@@ -21,9 +21,14 @@ Manage your Directify directory through natural conversation. Create listings, o
 - "Tag listings #10, #15, #20 as featured"
 
 **Custom Fields**
-- "Add a 'Price' number field and make it filterable"
-- "Create a 'Size' dropdown with options: Small, Medium, Large"
 - "Show me all custom fields"
+- "What fields are available for listings?"
+
+**Articles (Blog)**
+- "Write a blog post about the top 10 Italian restaurants"
+- "List all published articles"
+- "Unpublish article #15"
+- "Create an article from this markdown content"
 
 **Bulk Operations**
 - "Import this CSV of listings" (paste CSV data)
@@ -187,7 +192,7 @@ The agent will parse it, match categories, and create all listings.
 
 ## API Rate Limits
 
-- 60 requests per minute
+- 120 requests per minute per directory
 - Bulk endpoints count as 1 request
 - The agent automatically handles pagination for large datasets
 
