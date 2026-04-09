@@ -408,6 +408,82 @@ Returns paginated articles filtered by category name.
 
 ---
 
+## Pages (Custom Pages)
+
+Custom pages are standalone pages for static content (About, Terms, comparisons) or programmatic SEO pages. They appear at `/pages/{slug}/` on the directory site.
+
+### List Pages
+```
+GET /directories/{directory_id}/pages
+```
+
+Returns paginated pages ordered by `order`.
+
+### Get Single Page
+```
+GET /directories/{directory_id}/pages/{page_id}
+```
+
+Response fields: `id`, `title`, `slug`, `markdown`, `placement`, `is_markdown`, `is_published`, `is_external`, `external_url`, `new_tab`, `order`, `seo`, `directory`, `page_url`, `created_at`, `updated_at`
+
+### Create Page
+```
+POST /directories/{directory_id}/pages
+```
+
+Body:
+```json
+{
+  "title": "Page Title",
+  "slug": "page-slug",
+  "markdown": "# Page content\n\nMarkdown content for the page.",
+  "placement": "unlisted",
+  "is_published": true,
+  "order": 0,
+  "seo": {
+    "title": "SEO Title",
+    "description": "SEO Description"
+  }
+}
+```
+
+Required: `title`
+
+Fields:
+- `title` (string) - Page title
+- `slug` (string) - URL slug, auto-generated from title if not provided
+- `markdown` (string) - Page content in markdown
+- `placement` (string) - Where the page link appears: `navbar`, `footer`, `sidebar`, or `unlisted` (default)
+- `is_published` (boolean) - Published status (default: true)
+- `order` (integer) - Sort order in navigation (default: 0)
+- `is_external` (boolean) - If true, this is a link to an external URL, not a page
+- `external_url` (string) - External URL (required if `is_external` is true)
+- `new_tab` (boolean) - Open external link in new tab
+- `seo` (object) - SEO metadata with `title` and `description`
+
+Uses `updateOrCreate` based on slug — creating a page with an existing slug updates it instead.
+
+### Update Page
+```
+PUT /directories/{directory_id}/pages/{page_id}
+```
+
+Same fields as create, all optional. If title changes and no slug provided, slug is auto-generated.
+
+### Delete Page
+```
+DELETE /directories/{directory_id}/pages/{page_id}
+```
+
+### Toggle Page Status
+```
+PATCH /directories/{directory_id}/pages/{page_id}/toggle
+```
+
+Toggles between published and unpublished. No request body needed.
+
+---
+
 ## Common Patterns
 
 ### Add a listing with custom fields

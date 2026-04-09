@@ -30,6 +30,13 @@ Manage your Directify directory through natural conversation. Create listings, o
 - "Unpublish article #15"
 - "Create an article from this markdown content"
 
+**Pages (Custom Pages)**
+- "Create an About Us page in the navbar"
+- "Generate comparison pages for NYC vs Chicago pizza"
+- "List all custom pages"
+- "Unpublish page #5"
+- "Add a Terms of Service page to the footer"
+
 **Bulk Operations**
 - "Import this CSV of listings" (paste CSV data)
 - "Set all listings in category 'Old' to draft"
