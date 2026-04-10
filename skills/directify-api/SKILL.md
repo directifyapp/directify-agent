@@ -484,6 +484,65 @@ Toggles between published and unpublished. No request body needed.
 
 ---
 
+## Organizers
+
+Organizers represent entities like agencies, studios, or event organizers. They have profile pages and can be linked to multiple listings. Assign a `user_id` to let a submitter manage their organizer profile.
+
+### List Organizers
+```
+GET /directories/{directory_id}/organizers
+```
+
+Returns all organizers including their associated listings.
+
+### Get Single Organizer
+```
+GET /directories/{directory_id}/organizers/{organizer_id}
+```
+
+Response fields: `id`, `name`, `slug`, `description`, `logo`, `logo_url`, `cover_image`, `cover_image_url`, `email`, `phone`, `website_url`, `social_links`, `user_id`, `is_active`, `order`, `projects`, `created_at`, `updated_at`
+
+### Create Organizer
+```
+POST /directories/{directory_id}/organizers
+```
+
+Body:
+```json
+{
+  "name": "Acme Events Co.",
+  "slug": "acme-events",
+  "description": "Leading event organizer",
+  "email": "hello@acme-events.com",
+  "phone": "+1 555-0100",
+  "website_url": "https://acme-events.com",
+  "social_links": {
+    "Twitter": "https://twitter.com/acmeevents",
+    "LinkedIn": "https://linkedin.com/company/acmeevents"
+  },
+  "user_id": 42,
+  "is_active": true,
+  "order": 0
+}
+```
+
+Required: `name`
+Optional: everything else. Slug is auto-generated from name if not provided. Set `user_id` to assign a submitter who can manage the organizer profile from their dashboard.
+
+### Update Organizer
+```
+PUT /directories/{directory_id}/organizers/{organizer_id}
+```
+
+Same fields as create, all optional.
+
+### Delete Organizer
+```
+DELETE /directories/{directory_id}/organizers/{organizer_id}
+```
+
+---
+
 ## Common Patterns
 
 ### Add a listing with custom fields
