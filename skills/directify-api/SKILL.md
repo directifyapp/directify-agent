@@ -500,7 +500,7 @@ Returns all organizers including their associated listings.
 GET /directories/{directory_id}/organizers/{organizer_id}
 ```
 
-Response fields: `id`, `name`, `slug`, `description`, `logo`, `logo_url`, `cover_image`, `cover_image_url`, `email`, `phone`, `website_url`, `social_links`, `user_id`, `is_active`, `order`, `projects`, `created_at`, `updated_at`
+Response fields: `id`, `name`, `slug`, `description`, `content`, `logo`, `logo_url`, `cover_image`, `cover_image_url`, `email`, `phone`, `address`, `website_url`, `social_links`, `user_id`, `is_active`, `order`, `projects`, `created_at`, `updated_at`
 
 ### Create Organizer
 ```
@@ -513,8 +513,10 @@ Body:
   "name": "Acme Events Co.",
   "slug": "acme-events",
   "description": "Leading event organizer",
+  "content": "# About Us\n\nWe specialize in creating memorable events across the region. Our team has over 10 years of experience...",
   "email": "hello@acme-events.com",
   "phone": "+1 555-0100",
+  "address": "123 Event St, New York, NY",
   "website_url": "https://acme-events.com",
   "social_links": {
     "Twitter": "https://twitter.com/acmeevents",
