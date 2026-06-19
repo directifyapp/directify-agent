@@ -60,7 +60,7 @@ Response includes `data` array and `meta` with pagination info.
 GET /directories/{directory_id}/projects/{project_id}
 ```
 
-Returns full listing with all custom field values.
+Returns full listing with all custom field values. Linked organizers are included as an `organizers` array (each with `id`, `name`, `slug`).
 
 ### Check Listing Exists
 ```
@@ -97,6 +97,7 @@ Body:
   "category_id": 1,
   "categories": [1, 2, 3],
   "tags": [1, 2],
+  "organizers": [5, 8],
   "is_active": true,
   "is_featured": false,
   "is_no_follow": false,
@@ -120,6 +121,8 @@ Body:
 Required: `name`
 Optional: everything else
 
+`organizers` is an array of organizer IDs to link the listing to (use `GET /directories/{id}/organizers` to find them). Only organizers belonging to the same directory are linked; any out-of-directory IDs are silently ignored. See the Organizers section below.
+
 Custom field values are passed as flat keys using the field name:
 ```json
 {
@@ -137,7 +140,7 @@ Use `GET /directories/{id}/custom-fields` to discover available field names.
 PUT /directories/{directory_id}/projects/{project_id}
 ```
 
-Same body as create. Only include fields you want to update.
+Same body as create. Only include fields you want to update. Passing `organizers` replaces the listing's current organizer links (send `[]` to unlink all); omit it to leave them untouched.
 
 ### Delete Listing
 ```
@@ -159,7 +162,8 @@ Body:
       "name": "Listing 1",
       "description": "Description 1",
       "categories": [1],
-      "tags": [1, 2]
+      "tags": [1, 2],
+      "organizers": [5]
     },
     {
       "name": "Listing 2",
@@ -299,7 +303,53 @@ GET /directories/{directory_id}/custom-fields
 
 Returns all custom fields for the directory. Use the field `name` as the key when setting values on listings.
 
-Note: Custom fields can only be created/updated/deleted from the Directify dashboard. The API only supports reading them and setting values on listings.
+### Get Single Custom Field
+```
+GET /directories/{directory_id}/custom-fields/{custom_field_id}
+```
+
+### Create Custom Field
+```
+POST /directories/{directory_id}/custom-fields
+```
+
+Body:
+```json
+{
+  "label": "Price Range",
+  "type": "select",
+  "options": ["$", "$$", "$$$"],
+  "fieldable_type": "listing",
+  "is_required": false,
+  "filterable": true,
+  "show_on_card": true,
+  "value_prefix": "",
+  "value_suffix": ""
+}
+```
+
+Required: `label`, `type`. Everything else is optional.
+
+- `type` is one of: `text`, `number`, `date`, `file_upload`, `url`, `email`, `rich_editor`, `markdown`, `textarea`, `checkbox`, `rating`, `select`, `list`, `multi_select`, `button`, `javascript`, `html`.
+- `name` (the machine key used when setting values on listings) is auto-derived from `label` (lowercased, snake_cased) if omitted — e.g. `"Price Range"` → `price_range`.
+- `fieldable_type` is `listing` (default), `organizer`, or `article`.
+- `options` is used by the `select`, `multi_select`, and `list` types.
+
+### Update Custom Field
+```
+PUT /directories/{directory_id}/custom-fields/{custom_field_id}
+```
+
+Same body as create. Only include fields you want to change.
+
+### Delete Custom Field
+```
+DELETE /directories/{directory_id}/custom-fields/{custom_field_id}
+```
+
+Deleting a field also removes its stored values from all listings.
+
+Note: After creating a field, set its value on a listing by passing the field `name` as a flat key in the listing's create/update body (see Create Listing above).
 
 ---
 
@@ -488,6 +538,8 @@ Toggles between published and unpublished. No request body needed.
 
 Organizers represent entities like agencies, studios, or event organizers. They have profile pages and can be linked to multiple listings. Assign a `user_id` to let a submitter manage their organizer profile.
 
+To link an organizer to a listing, pass an `organizers` array of organizer IDs when creating or updating the listing (see Create/Update Listing above) — the link is managed from the listing side, not via the organizer endpoints.
+
 ### List Organizers
 ```
 GET /directories/{directory_id}/organizers
@@ -566,6 +618,29 @@ curl -X POST https://directify.app/api/directories/{id}/projects \
   }'
 ```
 
+### Link a listing to an organizer
+First find the organizer ID, then pass it when creating (or updating) the listing:
+```bash
+# 1. Find the organizer
+curl "https://directify.app/api/directories/{id}/organizers" \
+  -H "Authorization: Bearer {key}"
+
+# 2. Create the listing already linked to organizer 5
+curl -X POST https://directify.app/api/directories/{id}/projects \
+  -H "Authorization: Bearer {key}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Summer Music Festival",
+    "organizers": [5]
+  }'
+
+# Or link/relink an existing listing (replaces the current set)
+curl -X PUT https://directify.app/api/directories/{id}/projects/{project_id} \
+  -H "Authorization: Bearer {key}" \
+  -H "Content-Type: application/json" \
+  -d '{ "organizers": [5, 8] }'
+```
+
 ### Publish a blog article
 ```bash
 curl -X POST https://directify.app/api/directories/{id}/articles \
@@ -625,3 +700,4 @@ Loop through pages until you get fewer than 100 results.
 8. Use the `exists` endpoint to check for duplicates before creating
 9. For articles, prefer `markdown` over `content` (HTML) for easier content creation
 10. Article categories are strings (names), not IDs — unlike listing categories which use IDs
+11. To link a listing to an organizer, fetch organizer IDs with `GET /directories/{id}/organizers`, then pass them as the `organizers` array when creating/updating the listing — no separate linking call is needed

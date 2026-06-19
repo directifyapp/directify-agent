@@ -20,9 +20,19 @@ Manage your Directify directory through natural conversation. Create listings, o
 - "Add tags: featured, new, popular"
 - "Tag listings #10, #15, #20 as featured"
 
+**Organizers**
+- "Create an organizer called Acme Events"
+- "Link listing #42 to the Acme Events organizer"
+- "Add these 5 festival listings and link them all to Acme Events"
+- "Show me all organizers and their listings"
+
 **Custom Fields**
 - "Show me all custom fields"
 - "What fields are available for listings?"
+- "Create a 'Price Range' select field with options $, $$, $$$"
+- "Add a filterable number field called 'Founded Year'"
+- "Make the 'Phone' field required"
+- "Delete the 'Legacy Notes' field"
 
 **Articles (Blog)**
 - "Write a blog post about the top 10 Italian restaurants"
