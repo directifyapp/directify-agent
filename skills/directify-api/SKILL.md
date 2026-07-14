@@ -107,10 +107,13 @@ Body:
   "image_alt_text": "Image description",
   "additional_image_urls": ["https://example.com/photo1.jpg", "https://example.com/photo2.jpg"],
   "video_url": "https://youtube.com/embed/...",
+  "video_thumbnail_url": "https://example.com/video-thumb.jpg",
   "social_links": {
     "twitter": "https://twitter.com/example",
     "github": "https://github.com/example"
   },
+  "starts_at": "2026-08-01 09:00:00",
+  "ends_at": "2026-09-01 09:00:00",
   "seo_title": "SEO Page Title",
   "seo_description": "SEO meta description",
   "schema": "{ JSON-LD schema }",
@@ -120,6 +123,8 @@ Body:
 
 Required: `name`
 Optional: everything else
+
+`starts_at` and `ends_at` control when a listing is live. A listing with a future `starts_at` stays hidden until then; once `ends_at` passes it is badged as expired or hidden, depending on the directory's settings.
 
 `organizers` is an array of organizer IDs to link the listing to (use `GET /directories/{id}/organizers` to find them). Only organizers belonging to the same directory are linked; any out-of-directory IDs are silently ignored. See the Organizers section below.
 
@@ -404,7 +409,7 @@ Note: `categories` are strings (names), not IDs. Slug is auto-generated from tit
 PUT /directories/{directory_id}/articles/{article_id}
 ```
 
-Same fields as create, all optional. Additional SEO fields available on update:
+Same fields as create, all optional. The full SEO object is accepted on both create and update:
 ```json
 {
   "seo": {
@@ -417,11 +422,12 @@ Same fields as create, all optional. Additional SEO fields available on update:
     "twitter_title": "Twitter Title",
     "twitter_description": "Twitter Description",
     "twitter_image": "https://example.com/tw.jpg",
-    "canonical_url": "https://example.com/canonical",
-    "robots": "index, follow"
+    "canonical": "https://example.com/canonical"
   }
 }
 ```
+
+Leave `canonical` empty to use the article's own URL. There is no per-article `robots` field.
 
 ### Delete Article
 ```
