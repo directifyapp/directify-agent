@@ -27,3 +27,7 @@ Authorization: Bearer YOUR_API_KEY_HERE
 Content-Type: application/json
 Accept: application/json
 ```
+
+## Theme
+
+The theme (design) endpoints live at `/directories/{directory_id}/theme` (GET, PUT) and `/theme/preview` (GET). See `skills/directify-api/SKILL.md` → Theme. Read the theme first: its `options` block lists the valid values for the directory's template.

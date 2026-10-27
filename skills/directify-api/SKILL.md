@@ -707,3 +707,86 @@ Loop through pages until you get fewer than 100 results.
 9. For articles, prefer `markdown` over `content` (HTML) for easier content creation
 10. Article categories are strings (names), not IDs — unlike listing categories which use IDs
 11. To link a listing to an organizer, fetch organizer IDs with `GET /directories/{id}/organizers`, then pass them as the `organizers` array when creating/updating the listing — no separate linking call is needed
+
+---
+
+## Theme (design)
+
+Everything the Theme Editor controls — template, base theme, brand colors, fonts, dark mode, hero text/media/colors, buttons, homepage sections, footer, brand images, per-template settings, editable labels, submitter panel, custom CSS vars — as one document. Changes are live at once.
+
+### Get Theme
+
+```
+GET /directories/{directory_id}/theme
+GET /directories/{directory_id}/theme?locale=es   # hero texts, homepage content and labels in that language
+```
+
+Returns `data` with the groups below plus `options`: the valid values for this directory's template (`templates`, `themes`, `fonts`, `palettes`, `sections` keys, `template_settings` with their type and allowed values, `labels`, `submitter_labels`, `custom_css_vars`, `languages`). **Always read it before writing** so you only send keys the template supports. `public_url` is the live site. Multilingual directories also return `translations`.
+
+### Update Theme
+
+```
+PUT /directories/{directory_id}/theme
+```
+
+Partial update: send only what changes. Body (every key optional):
+
+```json
+{
+  "template": "restaurant",
+  "theme": "light",
+  "palette": "ocean",
+  "brand": { "primary": "#1f2937", "secondary": null, "accent": "#f97316" },
+  "fonts": { "body": "Inter", "heading": null },
+  "dark_mode": { "auto": true, "theme": "night" },
+  "hero": {
+    "title": "Best coffee in Austin",
+    "subtitle": "Hand-picked cafés",
+    "show_category_search": true,
+    "cover_image_opacity": 40,
+    "layout": { "height": "640px", "logo_size": "h-12" },
+    "colors": { "title": "#111111", "search_button": "#f97316" },
+    "media": { "type": "slideshow", "slideshow_interval": 8, "slides": ["https://…/1.jpg", "https://…/2.jpg"] },
+    "collage": { "image_1": "https://…" }
+  },
+  "buttons": { "background": "#f97316", "text": "#ffffff" },
+  "homepage": {
+    "content": "<p>Welcome</p>",
+    "top_categories": true,
+    "category_count": 12,
+    "sections": [{ "key": "cta", "enabled": false }],
+    "categories": [{ "id": 12, "enabled": true }]
+  },
+  "footer": {
+    "enabled": true,
+    "copyright_text": "© 2026 Austin Coffee",
+    "colors": { "background": "#111111", "text": "#fafafa" },
+    "sections": [{ "title": "Company", "links": [{ "title": "About", "url": "/about" }] }]
+  },
+  "media": { "logo_url": "https://…/logo.png", "favicon_url": null },
+  "template_settings": { "hero_city_search": true, "nav_separator": "dot" },
+  "labels": { "directory": { "submit_listing_button_label": "Add yours" } },
+  "submitter_panel": { "dark_mode": false, "accent_color": "#f97316" },
+  "custom_css_vars": { "--radius-box": "1.5rem", "--depth": null },
+  "translations": { "es": { "hero": { "title": "El mejor café" }, "homepage": { "content": "…" }, "labels": { "directory": { "submit_listing_button_label": "Añadir" } } } }
+}
+```
+
+Rules:
+- `template` switch applies that template's preset brand colors (when it has one) and the rest of the body is validated against the new template.
+- `palette` sets all three brand colors; `brand` sets them one by one (null clears one). Text (`-content`) colors are derived automatically.
+- `template_settings` keys must appear in `options.template_settings` for the template; otherwise 422 naming the templates that use the key.
+- `media.*_url` values are downloaded and stored (PNG, JPG, WebP, GIF, SVG, ICO up to 10 MB); null removes the image.
+- `hero.media` only on templates where `options.hero_media_supported` is true; `homepage.sections` only when `options.sections` is not empty.
+- `translations` is keyed by extra language code (never the default language); null removes a translation.
+- Responds with the full theme document (same as GET) after the change. Validation errors are 422 with a message per field that lists the valid choices.
+
+### Preview (screenshot)
+
+```
+GET /directories/{directory_id}/theme/preview?page=home&width=1280
+```
+
+`page`: home, browse, categories, category, listing, blog, map, submit. `width`: 375, 768, 1280, 1440. Optional `locale`. Returns `data.url` (PNG), `page_url`, `width`, `height`. Fetch the image to check your change the way a visitor sees it. Limited to 20 captures per hour per account.
+
+Typical flow: `GET /theme` → decide → `PUT /theme` → `GET /theme/preview` → adjust.
